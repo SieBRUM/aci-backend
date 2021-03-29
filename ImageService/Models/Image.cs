@@ -28,14 +28,14 @@ namespace ImageService.Models
 
         /// <summary>
         /// [Required]: cannot be null
-        /// Foreign key to the table row it should be linked to
+        /// Foreign key linked to the item in another table (table type is defined in LinkedTableType)
         /// </summary>
         [Required]
         public int LinkedKey { get; set; }
 
         /// <summary>
         /// [Required]: cannot be null
-        /// Used to store to which table the LinkedKey is linked to
+        /// Contains enum to which table the LinkedKey (foreign key) links to
         /// </summary>
         [Required]
         public LinkedTableType LinkedTableType { get; set; }

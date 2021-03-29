@@ -1,5 +1,6 @@
 ﻿using ProductService.DBContexts;
 using ProductService.Models;
+using ProductService.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -7,6 +8,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Flurl.Http;
+using System.IO;
+using System.Drawing;
 
 namespace ProductService.Controllers
 {
@@ -91,6 +94,11 @@ namespace ProductService.Controllers
                 return BadRequest("PRODUCT.ADD.NO_CATEGORY");
             }
 
+            if(await _dbContext.Products.AnyAsync(x => x.Name.Trim().ToLower() == addProductModel.Name.Trim().ToLower()))
+            {
+                return BadRequest("PRODUCT.ADD.NAME_ALREADY_EXISTS");
+            }
+
             Product newProduct = new()
             {
                 CatalogNumber = addProductModel.CatalogNumber,
@@ -119,7 +127,12 @@ namespace ProductService.Controllers
             if(addProductModel.Images != default && addProductModel.Images.Any())
             {
                 var addImagesObject = new AddImageModel(newProduct.Id, LinkedTableType.PRODUCT, addProductModel.Images);
-                await $"https://localhost:44372/api/image".PostJsonAsync(addImagesObject);
+                if((await $"https://localhost:44372/api/image".AllowAnyHttpStatus().PostJsonAsync(addImagesObject)).StatusCode != 200)
+                {
+                    _dbContext.Products.Remove(newProduct);
+                    await _dbContext.SaveChangesAsync();
+                    return BadRequest("PRODUCT.ADD.SAVING_IMAGES_FAILED");
+                }
             }
 
             return Created($"/product/{newProduct.Id}", newProduct);
@@ -163,5 +176,6 @@ namespace ProductService.Controllers
 
             return true;
         }
+
     }
 }

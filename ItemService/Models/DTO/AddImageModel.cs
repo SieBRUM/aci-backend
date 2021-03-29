@@ -1,4 +1,4 @@
-﻿namespace ImageService.Models
+﻿namespace ProductService.Models.DTO
 {
     /// <summary>
     /// Data model for the AddImage calls
@@ -17,5 +17,12 @@
         /// Contains all images that need to be saved
         /// </summary>
         public string[] Base64Images { get; set; }
+
+        public AddImageModel(int linkedPrimaryKey, LinkedTableType linkedTableType, string[] base64Images)
+        {
+            LinkedPrimaryKey = linkedPrimaryKey;
+            LinkedTableType = linkedTableType;
+            Base64Images = base64Images;
+        }
     }
 }

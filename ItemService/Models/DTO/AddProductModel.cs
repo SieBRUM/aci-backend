@@ -1,4 +1,4 @@
-﻿namespace ProductService.Models
+﻿namespace ProductService.Models.DTO
 {
     /// <summary>
     /// Data model for the AddProduct calls

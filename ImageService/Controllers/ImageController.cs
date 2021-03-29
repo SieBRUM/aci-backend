@@ -1,8 +1,10 @@
 ﻿using ImageService.DBContexts;
 using ImageService.Models;
+using ImageService.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -56,6 +58,11 @@ namespace ImageService.Controllers
 
             foreach (var image in addImageModel.Base64Images)
             {
+                if (CheckImage(new CheckImagesModel() { Base64Image = image }).GetType() != typeof(OkObjectResult))
+                {
+                    return BadRequest("File is not an image");
+                }
+
                 var newImage = new Image()
                 {
                     LinkedKey = addImageModel.LinkedPrimaryKey,
@@ -70,6 +77,47 @@ namespace ImageService.Controllers
             await _dbContext.SaveChangesAsync();
 
             return Created("/image", images);
+        }
+
+        /// <summary>
+        /// Checks if Base64 string is an image
+        /// </summary>
+        /// <param name="checkImagesModel">Object containing the Base64 string</param>
+        /// <returns></returns>
+        [HttpPost("checkimage")]
+        public IActionResult CheckImage(CheckImagesModel checkImagesModel)
+        {
+            if(checkImagesModel == default || string.IsNullOrWhiteSpace(checkImagesModel.Base64Image))
+            {
+                return BadRequest("Request did not contain data");
+            }
+
+
+            if(!checkImagesModel.Base64Image.Contains(","))
+            {
+                return BadRequest("Base64string is not JS based Base64 (does not contain type)");
+            }
+
+            var acceptedImageTypes = new string[] { "png", "jpeg" };
+
+            var fileType = checkImagesModel.Base64Image.Split(",")[0];
+            if (!acceptedImageTypes.Any(fileType.Contains))
+            {
+                return BadRequest("Incorrect image type");
+            }
+
+            try
+            {
+                using var ms = new MemoryStream(Convert.FromBase64String(checkImagesModel.Base64Image[(checkImagesModel.Base64Image.IndexOf(",") + 1)..]));
+                var img = System.Drawing.Image.FromStream(ms);
+                img.Dispose();
+            }
+            catch(Exception ex)
+            {
+                return BadRequest("Incorrect image type");
+            }
+
+            return Ok();
         }
     }
 }

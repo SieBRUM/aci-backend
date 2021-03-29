@@ -1,4 +1,4 @@
-﻿namespace ProductService.Models
+﻿namespace ProductService.Models.DTO
 {
     public enum LinkedTableType
     {

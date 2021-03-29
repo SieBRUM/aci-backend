@@ -1,5 +1,6 @@
 ﻿using ProductService.DBContexts;
 using ProductService.Models;
+using ProductService.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;

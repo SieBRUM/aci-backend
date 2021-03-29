@@ -26,5 +26,10 @@ namespace ProductService.DBContexts
             optionsBuilder.UseSqlServer("Server=localhost\\SQLEXPRESS;Database=ProductService;Trusted_Connection=True;");
             base.OnConfiguring(optionsBuilder);
         }
+
+        internal bool AnyAsync()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
