@@ -58,7 +58,7 @@ namespace ImageService.Controllers
 
             foreach (var image in addImageModel.Base64Images)
             {
-                if (CheckImage(new CheckImagesModel() { Base64Image = image }).GetType() != typeof(OkObjectResult))
+                if (CheckImage(new CheckImageModel() { Base64Image = image }).GetType() != typeof(OkObjectResult))
                 {
                     return BadRequest("File is not an image");
                 }
@@ -82,25 +82,25 @@ namespace ImageService.Controllers
         /// <summary>
         /// Checks if Base64 string is an image
         /// </summary>
-        /// <param name="checkImagesModel">Object containing the Base64 string</param>
+        /// <param name="checkImageModel">Object containing the Base64 string</param>
         /// <returns></returns>
         [HttpPost("checkimage")]
-        public IActionResult CheckImage(CheckImagesModel checkImagesModel)
+        public IActionResult CheckImage(CheckImageModel checkImageModel)
         {
-            if(checkImagesModel == default || string.IsNullOrWhiteSpace(checkImagesModel.Base64Image))
+            if(checkImageModel == default || string.IsNullOrWhiteSpace(checkImageModel.Base64Image))
             {
                 return BadRequest("Request did not contain data");
             }
 
 
-            if(!checkImagesModel.Base64Image.Contains(","))
+            if(!checkImageModel.Base64Image.Contains(","))
             {
                 return BadRequest("Base64string is not JS based Base64 (does not contain type)");
             }
 
             var acceptedImageTypes = new string[] { "png", "jpeg" };
 
-            var fileType = checkImagesModel.Base64Image.Split(",")[0];
+            var fileType = checkImageModel.Base64Image.Split(",")[0];
             if (!acceptedImageTypes.Any(fileType.Contains))
             {
                 return BadRequest("Incorrect image type");
@@ -108,7 +108,7 @@ namespace ImageService.Controllers
 
             try
             {
-                using var ms = new MemoryStream(Convert.FromBase64String(checkImagesModel.Base64Image[(checkImagesModel.Base64Image.IndexOf(",") + 1)..]));
+                using var ms = new MemoryStream(Convert.FromBase64String(checkImageModel.Base64Image[(checkImageModel.Base64Image.IndexOf(",") + 1)..]));
                 var img = System.Drawing.Image.FromStream(ms);
                 img.Dispose();
             }
