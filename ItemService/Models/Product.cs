@@ -52,8 +52,10 @@ namespace ProductService.Models
 
         /// <summary>
         /// Foreign key to the category that is bound to the product
+        /// [Required]: cannot be null
         /// </summary>
         [ForeignKey("CategoryId")]
+        [Required]
         public virtual Category Category { get; set; }
     }
 }
