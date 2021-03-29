@@ -83,7 +83,7 @@ namespace ImageService.Controllers
         /// Checks if Base64 string is an image
         /// </summary>
         /// <param name="checkImageModel">Object containing the Base64 string</param>
-        /// <returns></returns>
+        /// <returns>Badrequest if it's not an image. Ok if it is an image</returns>
         [HttpPost("checkimage")]
         public IActionResult CheckImage(CheckImageModel checkImageModel)
         {
