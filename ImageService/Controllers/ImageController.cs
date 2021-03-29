@@ -112,7 +112,7 @@ namespace ImageService.Controllers
                 var img = System.Drawing.Image.FromStream(ms);
                 img.Dispose();
             }
-            catch(Exception ex)
+            catch (Exception)
             {
                 return BadRequest("Incorrect image type");
             }
