@@ -58,7 +58,7 @@ namespace ImageService.Controllers
 
             foreach (var image in addImageModel.Base64Images)
             {
-                if (CheckImage(new CheckImageModel() { Base64Image = image }).GetType() != typeof(OkObjectResult))
+                if (CheckImage(new CheckImageModel() { Base64Image = image }).GetType() != typeof(OkResult))
                 {
                     return BadRequest("File is not an image");
                 }
