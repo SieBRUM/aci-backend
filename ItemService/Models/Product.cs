@@ -36,20 +36,15 @@ namespace ProductService.Models
         /// </summary>
         public string InventoryLocation { get; set; }
         /// <summary>
-        /// Displays if the product is available to borrow
+        /// Sets one of the following states for the product: available, unavailable or archived
         /// </summary>
         [Required]
-        public bool IsAvailable { get; set; }
+        public ProductState ProductState { get; set; }
         /// <summary>
         /// Boolean if product rental needs to be approved
         /// </summary>
         [Required]
         public bool RequiresApproval { get; set; }
-        /// <summary>
-        /// Used to check when the product was archived
-        /// </summary>
-        public DateTime? ArchivedSince { get; set; }
-
         /// <summary>
         /// Foreign key to the category that is bound to the product
         /// [Required]: cannot be null

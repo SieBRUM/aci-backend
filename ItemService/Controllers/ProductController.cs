@@ -106,8 +106,7 @@ namespace ProductService.Controllers
                 Description = addProductModel.Description,
                 InventoryLocation = addProductModel.Location,
                 RequiresApproval = addProductModel.RequiresApproval,
-                IsAvailable = true,
-                ArchivedSince = null,
+                ProductState = ProductState.AVAILABLE,
                 Category = await _dbContext.Categories.FirstOrDefaultAsync(x => x.Id == addProductModel.CategoryId)
             };
 
@@ -175,6 +174,33 @@ namespace ProductService.Controllers
             _dbContext.SaveChanges();
 
             return true;
+        }
+
+        /// <summary>
+        /// Archives a product so it can't be used anymore
+        /// </summary>
+        /// <param name="productID">The id for the product that needs to be archived</param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> ArchiveProduct(int productID)
+        {
+            if (productID <= 0 || productID == null)
+            {
+                return BadRequest("PRODUCT.ARCHIVE.NO_VALID_ID");
+            }
+            Product foundProduct = await _dbContext.Products.FirstOrDefaultAsync(x => x.Id == productID);
+            if (foundProduct == null)
+            {
+                return BadRequest("PRODUCT.ARCHIVE.NO_PRODUCT_FOUND");
+            }
+            if (foundProduct.ProductState == ProductState.ARCHIVED)
+            {
+                return BadRequest("PRODUCT.ARCHIVE.PRODUCT_ALREADY_ARCHIVED");
+            }
+            //TODO: Sends mail to all persons that have already rented this product.
+            foundProduct.ProductState = ProductState.ARCHIVED;
+            await _dbContext.SaveChangesAsync();
+            return Ok("PRODUCT.ARCHIVE.ARCHIVE_SUCCESFULL");
         }
 
     }
