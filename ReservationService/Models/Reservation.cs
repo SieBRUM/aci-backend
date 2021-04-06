@@ -19,6 +19,7 @@ namespace ReservationService.Models
         [Key]
         [Required]
         public int Id { get; set; }
+
         /// <summary>
         /// [Required]: cannot be null
         /// Used to display the starting date when the reservation can be picked up
@@ -49,6 +50,24 @@ namespace ReservationService.Models
         /// Id of the person that made the review of the reservation
         /// </summary>
         public int? ReviewerId { get; set; }
+
+        /// <summary>
+        /// Used to know if the reservation is approved or not
+        /// </summary>
+        public bool IsApproved { get; set; }
+
+        /// <summary>
+        /// [Required]: cannot be null
+        /// Used to know what product is being rented
+        /// </summary>
+        public DateTime? ReturnDate { get; set; }
+
+        /// <summary>
+        /// [Required]: cannot be null
+        /// Id of the person that mode the reservation
+        /// </summary>
+        [Required]
+        public int ProductId { get; set; }
 
         /// <summary>
         /// Used to know if the reservation is approved or not
