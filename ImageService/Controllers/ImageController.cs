@@ -32,6 +32,14 @@ namespace ImageService.Controllers
             _dbContext = dbContext;
         }
 
+        [HttpGet("{productId}")]
+        public async Task<IActionResult> GetFirstImageByProductId(int productId)
+        {
+            var image = await _dbContext.Images.FirstOrDefaultAsync(x => x.LinkedKey == productId && x.LinkedTableType == LinkedTableType.PRODUCT);
+
+            return Ok(new ImageBlobModel() { Blob = image?.Blob });
+        }
+
         /// <summary>
         /// Adds image to the database
         /// </summary>
