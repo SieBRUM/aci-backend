@@ -40,6 +40,34 @@ namespace ProductService.Controllers
             return await _dbContext.Products.ToListAsync();
         }
 
+        [HttpGet("flat/{productId}")]
+        public async Task<IActionResult> GetFlatProductById(int productId)
+        {
+            var product = await _dbContext.Products.FirstOrDefaultAsync(x => x.Id == productId);
+
+            if (product == default)
+            {
+                return NotFound("API_RESPONSES.PRODUCT.GET_PRODUCT_BY_ID.NOT_FOUND");
+            }
+
+            var cartProduct = new ProductFlatModel()
+            {
+                Id = product.Id,
+                CatalogNumber = product.CatalogNumber,
+                Name = product.Name,
+                Description = product.Description,
+                IsAvailable = product.IsAvailable,
+                ArchivedSince = product.ArchivedSince,
+                Category = product.Category,
+            };
+
+            var image = await $"https://localhost:44372/api/image/{product.Id}".AllowAnyHttpStatus().GetJsonAsync<ImageBlobModel>();
+            cartProduct.Image = Convert.ToBase64String(image.Blob);
+
+            return Ok(cartProduct);
+
+        }
+
         /// <summary>
         /// Get latest catalog item so the front-end knows what the max is
         /// </summary>

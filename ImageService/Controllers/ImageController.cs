@@ -2,6 +2,7 @@
 using ImageService.Models;
 using ImageService.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -29,6 +30,14 @@ namespace ImageService.Controllers
         public ImageController(ImageServiceDatabaseContext dbContext)
         {
             _dbContext = dbContext;
+        }
+
+        [HttpGet("{productId}")]
+        public async Task<IActionResult> GetFirstImageByProductId(int productId)
+        {
+            var image = await _dbContext.Images.FirstOrDefaultAsync(x => x.LinkedKey == productId && x.LinkedTableType == LinkedTableType.PRODUCT);
+
+            return Ok(new ImageBlobModel() { Blob = image?.Blob });
         }
 
         /// <summary>

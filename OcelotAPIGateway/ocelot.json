@@ -65,6 +65,17 @@
         }
       ],
       "UpstreamPathTemplate": "/api/image"
+    },
+    {
+      "DownstreamPathTemplate": "/image/{productId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 64799
+        }
+      ],
+      "UpstreamPathTemplate": "/api/image/{productId}"
     }
 
   ],
