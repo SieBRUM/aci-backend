@@ -12,7 +12,7 @@
       "UpstreamPathTemplate": "/api/product"
     },
     {
-      "DownstreamPathTemplate": "/product/{id}",
+      "DownstreamPathTemplate": "/product/getspecificproduct/{id}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -54,6 +54,17 @@
         }
       ],
       "UpstreamPathTemplate": "/api/image"
+    },
+    {
+      "DownstreamPathTemplate": "/reservation/reserveproducts",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 64808
+        }
+      ],
+      "UpstreamPathTemplate": "/api/products/reserve"
     }
 
   ],
