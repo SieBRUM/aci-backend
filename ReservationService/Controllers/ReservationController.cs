@@ -106,6 +106,11 @@ namespace ReservationService.Controllers
             {
                 return BadRequest(productModelsErrorList);
             }
+            foreach (Reservation item in revervations)
+            {
+                _dbContext.Reservations.Add(item);
+            }
+            await _dbContext.SaveChangesAsync();
             return Ok();
         }
 
