@@ -127,7 +127,6 @@ namespace ProductService.Controllers
             cartProduct.Image = Convert.ToBase64String(image.Blob);
 
             return Ok(cartProduct);
-
         }
 
         /// <summary>
