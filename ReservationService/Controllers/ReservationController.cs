@@ -71,7 +71,15 @@ namespace ReservationService.Controllers
                 }
                 if (product.EndDate < product.StartDate)
                 {
-                    productModelsErrorList.Add(new KeyValuePair<ProductModel, string>(product, "PRODUCT.RESERVE.PRODUCT_INVALID_ENDDATE"));
+                    productModelsErrorList.Add(new KeyValuePair<ProductModel, string>(product, "PRODUCT.RESERVE.PRODUCT_ENDDATE_BEFORE_STARTDATE"));
+                }
+                if (product.StartDate.DayOfWeek == DayOfWeek.Saturday || product.StartDate.DayOfWeek == DayOfWeek.Sunday)
+                {
+                    productModelsErrorList.Add(new KeyValuePair<ProductModel, string>(product, "PRODUCT.RESERVE.STARTDATE_IN_WEEKEND"));
+                }
+                if (product.EndDate.DayOfWeek == DayOfWeek.Saturday || product.EndDate.DayOfWeek == DayOfWeek.Sunday)
+                {
+                    productModelsErrorList.Add(new KeyValuePair<ProductModel, string>(product, "PRODUCT.RESERVE.ENDDATE_IN_WEEKEND"));
                 }
                 int weekenddays = await amountOfWeekendDays(product.StartDate, product.EndDate);
                 double totalamountofdays = (product.EndDate - product.StartDate).TotalDays - weekenddays;
@@ -79,32 +87,39 @@ namespace ReservationService.Controllers
                 {
                     productModelsErrorList.Add(new KeyValuePair<ProductModel, string>(product, "PRODUCT.RESERVE.RESERVATION_TIME_TO_LONG"));
                 }
-                Reservation foundReservation = await _dbContext.Reservations.Where(x => x.StartDate >= product.StartDate && x.StartDate <= product.EndDate || x.EndDate >= product.StartDate && x.EndDate <= product.EndDate).FirstOrDefaultAsync();
+                Reservation foundReservation = await _dbContext.Reservations.Where(x => x.StartDate <= product.EndDate && product.StartDate < x.EndDate).FirstOrDefaultAsync();
                 if (foundReservation != null)
                 {
                     productModelsErrorList.Add(new KeyValuePair<ProductModel, string>(product, "PRODUCT.RESERVE.PRODUCT_ALREADY_RESERVED_IN_PERIOD"));
                 }
                 var result =  await $"https://localhost:44372/api/product/{product.Id}".AllowAnyHttpStatus().GetStringAsync();
-                Product foundProduct = JsonConvert.DeserializeObject<Product>(result);
-                if (foundProduct == null)
+                if (string.IsNullOrWhiteSpace(result))
                 {
                     productModelsErrorList.Add(new KeyValuePair<ProductModel, string>(product, "PRODUCT.RESERVE.PRODUCT_NOT_FOUND"));
                 }
-                if (foundProduct.ProductState != ProductState.AVAILABLE)
-                {
-                    productModelsErrorList.Add(new KeyValuePair<ProductModel, string>(product, "PRODUCT.RESERVE.PRODUCT_NOT_AVAILABLE"));
-                }
                 else
                 {
-                    //TODO: Add RenterID with JWT claims
-                    Reservation reservation = new Reservation()
+                    Product foundProduct = JsonConvert.DeserializeObject<Product>(result);
+                    if (foundProduct == null)
                     {
-                        ProductId = product.Id,
-                        StartDate = product.StartDate,
-                        EndDate = product.EndDate,
-                        IsApproved = foundProduct.RequiresApproval ? false : null,
-                    };
-                    revervations.Add(reservation);
+                        productModelsErrorList.Add(new KeyValuePair<ProductModel, string>(product, "PRODUCT.RESERVE.PRODUCT_NOT_FOUND"));
+                    }
+                    if (foundProduct.ProductState != ProductState.AVAILABLE)
+                    {
+                        productModelsErrorList.Add(new KeyValuePair<ProductModel, string>(product, "PRODUCT.RESERVE.PRODUCT_NOT_AVAILABLE"));
+                    }
+                    if(productModelsErrorList.Count <= 0)
+                    {
+                        //TODO: Add RenterID with JWT claims
+                        Reservation reservation = new Reservation()
+                        {
+                            ProductId = product.Id,
+                            StartDate = product.StartDate,
+                            EndDate = product.EndDate,
+                            IsApproved = foundProduct.RequiresApproval ? false : null,
+                        };
+                        revervations.Add(reservation);
+                    }
                 }
             }
             if (productModelsErrorList.Count > 0)
