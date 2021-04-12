@@ -28,7 +28,7 @@ namespace ReservationService.Tests.UnitTests
             _controller = new ReservationController(_context);
         }
         [Fact]
-        private async void testStartDateBeforeCurrentdate()
+        private async void ReserveProducts_ShouldReturnStartDateBeforeCurrentDateError()
         {
             ReserveProductModel model = new ReserveProductModel() { ProductModels = new List<ProductModel>() };
             ProductModel pm1 = new ProductModel { Id = 6, StartDate = new DateTime(2021, 3, 18), EndDate = new DateTime(2021, 6, 23) };
@@ -49,7 +49,7 @@ namespace ReservationService.Tests.UnitTests
         }
 
         [Fact]
-        private async void testEndDateBeforeCurrentdate()
+        private async void ReserveProducts_ShouldReturnEndDateBeforeCurrentDateError()
         {
             ReserveProductModel model = new ReserveProductModel() { ProductModels = new List<ProductModel>() };
             ProductModel pm1 = new ProductModel { Id = 6, StartDate = new DateTime(2021, 6, 18), EndDate = new DateTime(2021, 3, 23) };
@@ -70,7 +70,7 @@ namespace ReservationService.Tests.UnitTests
         }
 
         [Fact]
-        private async void testEndDateBeforeStartDate()
+        private async void ReserveProducts_ShouldReturnEndDateBeforeStartDateError()
         {
             ReserveProductModel model = new ReserveProductModel() { ProductModels = new List<ProductModel>() };
             ProductModel pm1 = new ProductModel { Id = 6, StartDate = new DateTime(2021, 6, 18), EndDate = new DateTime(2021, 6, 10) };
@@ -89,7 +89,7 @@ namespace ReservationService.Tests.UnitTests
         }
 
         [Fact]
-        private async void testStartDayWeekend()
+        private async void ReserveProducts_ShouldReturnStartDayWeekendError()
         {
             ReserveProductModel model = new ReserveProductModel() { ProductModels = new List<ProductModel>() };
             ProductModel pm1 = new ProductModel { Id = 6, StartDate = new DateTime(2021, 6, 12), EndDate = new DateTime(2021, 6, 17) };
@@ -108,7 +108,7 @@ namespace ReservationService.Tests.UnitTests
         }
 
         [Fact]
-        private async void testEndDayWeekend()
+        private async void ReserveProducts_ShouldReturnEndDayWeekendError()
         {
             ReserveProductModel model = new ReserveProductModel() { ProductModels = new List<ProductModel>() };
             ProductModel pm1 = new ProductModel { Id = 6, StartDate = new DateTime(2021, 6, 15), EndDate = new DateTime(2021, 6, 19) };
@@ -127,7 +127,7 @@ namespace ReservationService.Tests.UnitTests
         }
 
         [Fact]
-        private async void testReservationTimeToLong()
+        private async void ReserveProducts_ShouldReturnReservationTimeToLongError()
         {
             ReserveProductModel model = new ReserveProductModel() { ProductModels = new List<ProductModel>() };
             ProductModel pm1 = new ProductModel { Id = 6, StartDate = new DateTime(2021, 7, 15), EndDate = new DateTime(2021, 7, 23) };
@@ -146,7 +146,7 @@ namespace ReservationService.Tests.UnitTests
         }
 
         [Fact]
-        private async void testReservationPeriodAlreadyTaken()
+        private async void ReserveProducts_ShouldReturnReservationPeriodAlreadyTakenError()
         {
             ReserveProductModel model = new ReserveProductModel() { ProductModels = new List<ProductModel>() };
             ProductModel pm1 = new ProductModel { Id = 6, StartDate = new DateTime(2022, 6, 15), EndDate = new DateTime(2022, 6, 17) };
@@ -170,7 +170,7 @@ namespace ReservationService.Tests.UnitTests
         }
 
         [Fact]
-        private async void testNoProductFound()
+        private async void ReserveProducts_ShouldReturnNoProductFoundError()
         {
             ReserveProductModel model = new ReserveProductModel() { ProductModels = new List<ProductModel>() };
             ProductModel pm1 = new ProductModel { Id = 6, StartDate = new DateTime(2021, 7, 15), EndDate = new DateTime(2021, 7, 16) };
@@ -188,7 +188,7 @@ namespace ReservationService.Tests.UnitTests
             }
         }
         [Fact]
-        private async void testNoProductFoundMultipleProducts()
+        private async void ReserveProducts_ShouldReturnNoProductFoundMultipleProductsError()
         {
             ReserveProductModel model = new ReserveProductModel() { ProductModels = new List<ProductModel>() };
             ProductModel pm1 = new ProductModel { Id = 6, StartDate = new DateTime(2021, 7, 15), EndDate = new DateTime(2021, 7, 16) };
@@ -212,7 +212,7 @@ namespace ReservationService.Tests.UnitTests
 
 
         [Fact]
-        private async void testSuccessfullReservation()
+        private async void ReserveProducts_ShouldReturnSuccessfullReservationError()
         {
             ReserveProductModel model = new ReserveProductModel() { ProductModels = new List<ProductModel>() };
             ProductModel pm1 = new ProductModel { Id = 6, StartDate = new DateTime(2021, 6, 18), EndDate = new DateTime(2021, 6, 23) };
@@ -227,6 +227,11 @@ namespace ReservationService.Tests.UnitTests
             }
             Assert.Equal(1, _context.Reservations.Count());
         }
+        /// <summary>
+        /// Gets error from a badrequest error for the Reserve Products tests
+        /// </summary>
+        /// <param name="result">The IActionResult from the controller call</param>
+        /// <returns></returns>
         private List<KeyValuePair<ProductModel, string>> getErrorList(IActionResult result)
         {
             ObjectResult objectResult = Assert.IsType<BadRequestObjectResult>(result);
