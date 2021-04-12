@@ -170,7 +170,7 @@ namespace ReservationService.Tests.UnitTests
         }
 
         [Fact]
-        private async void testNoProductFount()
+        private async void testNoProductFound()
         {
             ReserveProductModel model = new ReserveProductModel() { ProductModels = new List<ProductModel>() };
             ProductModel pm1 = new ProductModel { Id = 6, StartDate = new DateTime(2021, 7, 15), EndDate = new DateTime(2021, 7, 16) };
@@ -187,6 +187,29 @@ namespace ReservationService.Tests.UnitTests
                 Assert.Equal("PRODUCT.RESERVE.PRODUCT_NOT_AVAILABLE", errorList[0].Value);
             }
         }
+        [Fact]
+        private async void testNoProductFoundMultipleProducts()
+        {
+            ReserveProductModel model = new ReserveProductModel() { ProductModels = new List<ProductModel>() };
+            ProductModel pm1 = new ProductModel { Id = 6, StartDate = new DateTime(2021, 7, 15), EndDate = new DateTime(2021, 7, 16) };
+            ProductModel pm2 = new ProductModel { Id = 6, StartDate = new DateTime(2021, 7, 8), EndDate = new DateTime(2021, 7, 9) };
+            model.ProductModels.Add(pm1);
+            model.ProductModels.Add(pm2);
+            Product product = new Product() { Id = 1, ProductState = ProductState.UNAVAILABLE, RequiresApproval = true };
+            string serializedObject = JsonConvert.SerializeObject(product);
+            using (var httpTest = new HttpTest())
+            {
+                httpTest.RespondWith(serializedObject);
+                var result = await _controller.ReserveProducts(model);
+                var errorList = getErrorList(result);
+                Assert.Equal(2, errorList.Count());
+                Assert.Equal(pm1, errorList[0].Key);
+                Assert.Equal(pm2, errorList[1].Key);
+                Assert.Equal("PRODUCT.RESERVE.PRODUCT_NOT_AVAILABLE", errorList[0].Value);
+                Assert.Equal("PRODUCT.RESERVE.PRODUCT_NOT_AVAILABLE", errorList[1].Value);
+            }
+        }
+
 
         [Fact]
         private async void testSuccessfullReservation()
