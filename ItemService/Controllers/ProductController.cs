@@ -57,6 +57,17 @@ namespace ProductService.Controllers
         }
 
         /// <summary>
+        /// Get the product with a certain id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("getspecificproduct/{id}")]
+        public async Task<ActionResult<Product>> GetSpecificProduct(int id)
+        {
+            return await _dbContext.Products.Where(x => x.Id == id).FirstOrDefaultAsync();
+        }
+
+        /// <summary>
         /// Get latest catalog item so the front-end knows what the max is
         /// </summary>
         /// <returns>Latest catalog item</returns>
