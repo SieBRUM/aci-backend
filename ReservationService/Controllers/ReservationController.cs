@@ -43,7 +43,11 @@ namespace ReservationService.Controllers
             var result = await _dbContext.Reservations.ToListAsync();
             return Ok(result);
         }
-
+        /// <summary>
+        /// Saves a reservation for a product.
+        /// </summary>
+        /// <param name="reserveProductModel">Model containing a list of product models.</param>
+        /// <returns></returns>
         [HttpPost("reserveproducts")]
         public async Task<IActionResult> ReserveProducts(ReserveProductModel reserveProductModel)
         {
@@ -87,6 +91,7 @@ namespace ReservationService.Controllers
                 {
                     productModelsErrorList.Add(new KeyValuePair<ProductModel, string>(product, "PRODUCT.RESERVE.RESERVATION_TIME_TO_LONG"));
                 }
+                // https://stackoverflow.com/questions/13513932/algorithm-to-detect-overlapping-periods
                 Reservation foundReservation = await _dbContext.Reservations.Where(x => x.StartDate <= product.EndDate && product.StartDate < x.EndDate).FirstOrDefaultAsync();
                 if (foundReservation != null)
                 {
@@ -133,7 +138,12 @@ namespace ReservationService.Controllers
             await _dbContext.SaveChangesAsync();
             return Ok();
         }
-
+        /// <summary>
+        /// Counts the amount of weekend days between two dates.
+        /// </summary>
+        /// <param name="startDate">The starting date</param>
+        /// <param name="endDate">The end date</param>
+        /// <returns></returns>
         private async Task<int> amountOfWeekendDays(DateTime startDate, DateTime endDate)
         {
             int amountOfWeekendDays = 0;
