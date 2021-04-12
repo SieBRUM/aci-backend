@@ -111,7 +111,7 @@ namespace ReservationService.Tests.UnitTests
         private async void ReserveProducts_ShouldReturnEndDayWeekendError()
         {
             ReserveProductModel model = new ReserveProductModel() { ProductModels = new List<ProductModel>() };
-            ProductModel pm1 = new ProductModel { Id = 6, StartDate = new DateTime(2021, 6, 15), EndDate = new DateTime(2021, 6, 19) };
+            ProductModel pm1 = new ProductModel { Id = 6, StartDate = new DateTime(2021, 6, 8), EndDate = new DateTime(2021, 6, 12) };
             model.ProductModels.Add(pm1);
             Product product = new Product() { Id = 1, ProductState = ProductState.AVAILABLE, RequiresApproval = true };
             string serializedObject = JsonConvert.SerializeObject(product);
