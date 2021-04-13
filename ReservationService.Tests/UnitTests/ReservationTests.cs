@@ -107,7 +107,7 @@ namespace ReservationService.Tests.UnitTests
             var model = new ReserveProductModel() { ProductModels = new List<ProductModel>() };
             var pm1 = new ProductModel { Id = 6, StartDate = new DateTime(2021, 6, 8), EndDate = new DateTime(2021, 6, 12) };
             model.ProductModels.Add(pm1);
-            Product product = new Product() { Id = 1, ProductState = ProductState.AVAILABLE, RequiresApproval = true };
+            var product = new Product() { Id = 1, ProductState = ProductState.AVAILABLE, RequiresApproval = true };
             string serializedObject = JsonConvert.SerializeObject(product);
             using var httpTest = new HttpTest();
             httpTest.RespondWith(serializedObject);

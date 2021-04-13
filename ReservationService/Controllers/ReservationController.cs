@@ -109,21 +109,24 @@ namespace ReservationService.Controllers
                     {
                         productModelsErrorList.Add(new KeyValuePair<ProductModel, string>(product, "PRODUCT.RESERVE.PRODUCT_NOT_FOUND"));
                     }
-                    if (foundProduct != null && foundProduct.ProductState != ProductState.AVAILABLE)
+                    else
                     {
-                        productModelsErrorList.Add(new KeyValuePair<ProductModel, string>(product, "PRODUCT.RESERVE.PRODUCT_NOT_AVAILABLE"));
-                    }
-                    if(productModelsErrorList.Count <= 0)
-                    {
-                        //TODO: Add RenterID with JWT claims
-                        var reservation = new Reservation()
+                        if (foundProduct.ProductState != ProductState.AVAILABLE)
                         {
-                            ProductId = product.Id,
-                            StartDate = product.StartDate,
-                            EndDate = product.EndDate,
-                            IsApproved = foundProduct.RequiresApproval ? false : null,
-                        };
-                        revervations.Add(reservation);
+                            productModelsErrorList.Add(new KeyValuePair<ProductModel, string>(product, "PRODUCT.RESERVE.PRODUCT_NOT_AVAILABLE"));
+                        }
+                        if (productModelsErrorList.Count <= 0)
+                        {
+                            //TODO: Add RenterID with JWT claims
+                            var reservation = new Reservation()
+                            {
+                                ProductId = product.Id,
+                                StartDate = product.StartDate,
+                                EndDate = product.EndDate,
+                                IsApproved = foundProduct.RequiresApproval ? false : null,
+                            };
+                            revervations.Add(reservation);
+                        }
                     }
                 }
             }
