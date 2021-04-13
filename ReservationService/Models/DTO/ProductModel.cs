@@ -15,6 +15,10 @@ namespace ReservationService.Models.DTO
         /// </summary>
         public int Id { get; set; }
         /// <summary>
+        /// The localId for the front-end reload
+        /// </summary>
+        public int LocalId { get; set; }
+        /// <summary>
         /// Start date for the reservation of a product
         /// </summary>
         public DateTime StartDate { get; set; }
