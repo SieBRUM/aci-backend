@@ -23,7 +23,7 @@
       "UpstreamPathTemplate": "/api/product/page/{pageIndex}/{pageSize}"
     },
     {
-      "DownstreamPathTemplate": "/product/getspecificproduct/{id}",
+      "DownstreamPathTemplate": "/product/{productId}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -31,7 +31,7 @@
           "Port": 64807
         }
       ],
-      "UpstreamPathTemplate": "/api/product/{id}"
+      "UpstreamPathTemplate": "/api/product/{productId}"
     },
     {
       "DownstreamPathTemplate": "/product/lastcatalog",

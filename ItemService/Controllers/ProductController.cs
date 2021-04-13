@@ -49,10 +49,10 @@ namespace ProductService.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("getspecificproduct/{id}")]
-        public async Task<ActionResult<Product>> GetSpecificProduct(int id)
+        [HttpGet("{productId}")]
+        public async Task<ActionResult<Product>> GetProduct(int productId)
         {
-            return await _dbContext.Products.Where(x => x.Id == id).FirstOrDefaultAsync();
+            return await _dbContext.Products.Where(x => x.Id == productId).FirstOrDefaultAsync();
         }
 
         /// <summary>
