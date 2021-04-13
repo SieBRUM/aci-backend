@@ -51,15 +51,15 @@ namespace ReservationService.Controllers
         [HttpPost("reserveproducts")]
         public async Task<IActionResult> ReserveProducts(ReserveProductModel reserveProductModel)
         {
-            List<Reservation> revervations = new List<Reservation>();
-            List<KeyValuePair<ProductModel, string>> productModelsErrorList = new List<KeyValuePair<ProductModel, string>>();
+            var revervations = new List<Reservation>();
+            var productModelsErrorList = new List<KeyValuePair<ProductModel, string>>();
             if (reserveProductModel.ProductModels == null || reserveProductModel.ProductModels.Count <= 0)
             {
                 return BadRequest("PRODUCT.RESERVE.NO_PRODUCTS");
             }
 
 
-            foreach (ProductModel product in reserveProductModel.ProductModels)
+            foreach (var product in reserveProductModel.ProductModels)
             {
                 if (product.Id <= 0)
                 {
@@ -85,14 +85,14 @@ namespace ReservationService.Controllers
                 {
                     productModelsErrorList.Add(new KeyValuePair<ProductModel, string>(product, "PRODUCT.RESERVE.ENDDATE_IN_WEEKEND"));
                 }
-                int weekenddays = await amountOfWeekendDays(product.StartDate, product.EndDate);
+                int weekenddays = AmountOfWeekendDays(product.StartDate, product.EndDate);
                 double totalamountofdays = (product.EndDate - product.StartDate).TotalDays - weekenddays;
                 if (totalamountofdays > 5)
                 {
                     productModelsErrorList.Add(new KeyValuePair<ProductModel, string>(product, "PRODUCT.RESERVE.RESERVATION_TIME_TO_LONG"));
                 }
                 // https://stackoverflow.com/questions/13513932/algorithm-to-detect-overlapping-periods
-                Reservation foundReservation = await _dbContext.Reservations.Where(x => x.StartDate <= product.EndDate && product.StartDate < x.EndDate).FirstOrDefaultAsync();
+                var foundReservation = await _dbContext.Reservations.Where(x => x.StartDate <= product.EndDate && product.StartDate < x.EndDate).FirstOrDefaultAsync();
                 if (foundReservation != null)
                 {
                     productModelsErrorList.Add(new KeyValuePair<ProductModel, string>(product, "PRODUCT.RESERVE.PRODUCT_ALREADY_RESERVED_IN_PERIOD"));
@@ -104,19 +104,19 @@ namespace ReservationService.Controllers
                 }
                 else
                 {
-                    Product foundProduct = JsonConvert.DeserializeObject<Product>(result);
+                    var foundProduct = JsonConvert.DeserializeObject<Product>(result);
                     if (foundProduct == null)
                     {
                         productModelsErrorList.Add(new KeyValuePair<ProductModel, string>(product, "PRODUCT.RESERVE.PRODUCT_NOT_FOUND"));
                     }
-                    if (foundProduct.ProductState != ProductState.AVAILABLE)
+                    if (foundProduct != null && foundProduct.ProductState != ProductState.AVAILABLE)
                     {
                         productModelsErrorList.Add(new KeyValuePair<ProductModel, string>(product, "PRODUCT.RESERVE.PRODUCT_NOT_AVAILABLE"));
                     }
                     if(productModelsErrorList.Count <= 0)
                     {
                         //TODO: Add RenterID with JWT claims
-                        Reservation reservation = new Reservation()
+                        var reservation = new Reservation()
                         {
                             ProductId = product.Id,
                             StartDate = product.StartDate,
@@ -131,7 +131,7 @@ namespace ReservationService.Controllers
             {
                 return BadRequest(productModelsErrorList);
             }
-            foreach (Reservation item in revervations)
+            foreach (var item in revervations)
             {
                 _dbContext.Reservations.Add(item);
             }
@@ -144,14 +144,14 @@ namespace ReservationService.Controllers
         /// <param name="startDate">The starting date</param>
         /// <param name="endDate">The end date</param>
         /// <returns></returns>
-        private async Task<int> amountOfWeekendDays(DateTime startDate, DateTime endDate)
+        private int AmountOfWeekendDays(DateTime startDate, DateTime endDate)
         {
             int amountOfWeekendDays = 0;
             for (DateTime i = startDate; i < endDate; i = i.AddDays(1))
             {
                 if (i.DayOfWeek == DayOfWeek.Saturday || i.DayOfWeek == DayOfWeek.Sunday)
                 {
-                    amountOfWeekendDays = amountOfWeekendDays + 1;
+                    amountOfWeekendDays++;
                 }
             }
             return amountOfWeekendDays;
