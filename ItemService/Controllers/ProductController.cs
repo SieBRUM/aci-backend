@@ -44,6 +44,16 @@ namespace ProductService.Controllers
             var result = await _dbContext.Products.ToListAsync();
             return Ok(result);
         }
+        /// <summary>
+        /// Get the product with a certain id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("getspecificproduct/{id}")]
+        public async Task<ActionResult<Product>> GetSpecificProduct(int id)
+        {
+            return await _dbContext.Products.Where(x => x.Id == id).FirstOrDefaultAsync();
+        }
 
         /// <summary>
         /// Get a single inventory page containing products
@@ -64,7 +74,7 @@ namespace ProductService.Controllers
                             Name = product.Name,
                             Location = product.InventoryLocation,
                             RequiresApproval = product.RequiresApproval,
-                            Status = product.IsAvailable ? InventoryProductStatus.Available : InventoryProductStatus.Unavailable
+                            Status = product.ProductState
                         };
 
             page.TotalProductCount = await query.CountAsync();

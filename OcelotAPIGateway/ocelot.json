@@ -12,6 +12,17 @@
       "UpstreamPathTemplate": "/api/product"
     },
     {
+      "DownstreamPathTemplate": "/product/page/{pageIndex}/{pageSize}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 64807
+        }
+      ],
+      "UpstreamPathTemplate": "/api/product/page/{pageIndex}/{pageSize}"
+    },
+    {
       "DownstreamPathTemplate": "/product/getspecificproduct/{id}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -21,17 +32,6 @@
         }
       ],
       "UpstreamPathTemplate": "/api/product/{id}"
-    },
-    {
-      "DownstreamPathTemplate": "/product/page/{pageIndex}/{pageSize}",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 64807
-        }
-      ],
-      "UpstreamPathTemplate": "/api/product/{pageIndex}/{pageSize}"
     },
     {
       "DownstreamPathTemplate": "/product/lastcatalog",
