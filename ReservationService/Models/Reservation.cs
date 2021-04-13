@@ -57,7 +57,7 @@ namespace ReservationService.Models
 
         /// <summary>
         /// [Required]: cannot be null
-        /// Used to know what product is being rented
+        /// Used to represent the product that is being reserved
         /// </summary>
         [Required]
         public int ProductId { get; set; }
