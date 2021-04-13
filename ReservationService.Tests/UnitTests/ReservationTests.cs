@@ -212,7 +212,7 @@ namespace ReservationService.Tests.UnitTests
 
 
         [Fact]
-        private async void ReserveProducts_ShouldReturnSuccessfullReservationError()
+        private async void ReserveProducts_ShouldReturnOkForSuccessfulReservation()
         {
             ReserveProductModel model = new ReserveProductModel() { ProductModels = new List<ProductModel>() };
             ProductModel pm1 = new ProductModel { Id = 6, StartDate = new DateTime(2021, 6, 18), EndDate = new DateTime(2021, 6, 23) };

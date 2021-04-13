@@ -47,7 +47,7 @@ namespace ReservationService.Controllers
         /// Saves a reservation for a product.
         /// </summary>
         /// <param name="reserveProductModel">Model containing a list of product models.</param>
-        /// <returns></returns>
+        /// <returns>Returns BadRequest with a list of errors, returns Ok if successful</returns>
         [HttpPost("reserveproducts")]
         public async Task<IActionResult> ReserveProducts(ReserveProductModel reserveProductModel)
         {

@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 
 namespace ProductService.Models.DTO
 {
+    /// <summary>
+    /// Enum for the state of a specific product
+    /// </summary>
     public enum ProductState
     {
         AVAILABLE = 0,
