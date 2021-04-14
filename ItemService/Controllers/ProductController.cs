@@ -275,7 +275,7 @@ namespace ProductService.Controllers
         /// <param name="archiveProductId">The id for the product that needs to be archived</param>
         /// <returns>BadRequest if data is incorrect, success message if successful</returns>
         [HttpDelete("{archiveProductId}")]
-        public async Task<ActionResult<string>> ArchiveProduct(int archiveProductId)
+        public async Task<IActionResult> ArchiveProduct(int archiveProductId)
         {
             if (archiveProductId <= 0)
             {
@@ -293,7 +293,7 @@ namespace ProductService.Controllers
             //TODO: Sends mail to all persons that have already rented this product.
             foundProduct.ProductState = ProductState.ARCHIVED;
             await _dbContext.SaveChangesAsync();
-            return Ok("PRODUCT.ARCHIVE.ARCHIVE_SUCCESFULL");
+            return Ok();
         }
 
     }
