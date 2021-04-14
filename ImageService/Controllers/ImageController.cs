@@ -32,6 +32,11 @@ namespace ImageService.Controllers
             _dbContext = dbContext;
         }
 
+        /// <summary>
+        /// Return the first image based on productId
+        /// </summary>
+        /// <param name="productId">productId linked to the image</param>
+        /// <returns>Null or the first image</returns>
         [HttpGet("{productId}")]
         public async Task<IActionResult> GetFirstImageByProductId(int productId)
         {
