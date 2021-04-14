@@ -241,16 +241,16 @@ namespace ProductService.Controllers
         /// <summary>
         /// Archives a product so it can't be used anymore
         /// </summary>
-        /// <param name="productID">The id for the product that needs to be archived</param>
+        /// <param name="archiveProductId">The id for the product that needs to be archived</param>
         /// <returns>BadRequest if data is incorrect, success message if successful</returns>
-        [HttpPost]
-        public async Task<IActionResult> ArchiveProduct(int productID)
+        [HttpDelete("{archiveProductId}")]
+        public async Task<ActionResult<string>> ArchiveProduct(int archiveProductId)
         {
-            if (productID <= 0)
+            if (archiveProductId <= 0)
             {
                 return BadRequest("PRODUCT.ARCHIVE.NO_VALID_ID");
             }
-            var foundProduct = await _dbContext.Products.FirstOrDefaultAsync(x => x.Id == productID);
+            var foundProduct = await _dbContext.Products.FirstOrDefaultAsync(x => x.Id == archiveProductId);
             if (foundProduct == null)
             {
                 return BadRequest("PRODUCT.ARCHIVE.NO_PRODUCT_FOUND");
