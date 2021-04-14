@@ -124,7 +124,10 @@ namespace ProductService.Controllers
             };
 
             var image = await $"https://localhost:44372/api/image/{product.Id}".AllowAnyHttpStatus().GetJsonAsync<ImageBlobModel>();
-            cartProduct.Image = Convert.ToBase64String(image.Blob);
+            if(image != default && image.Blob != default)
+            {
+                cartProduct.Image = Convert.ToBase64String(image.Blob);
+            }
 
             return Ok(cartProduct);
         }
