@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace ImageService.Models.DTO
+﻿namespace ImageService.Models.DTO
 {
+    /// <summary>
+    /// Very basic class used for just one image
+    /// </summary>
     public class ImageBlobModel
     {
         public byte[] Blob { get; set; }

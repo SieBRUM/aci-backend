@@ -8,8 +8,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Flurl.Http;
-using System.IO;
-using System.Drawing;
 
 namespace ProductService.Controllers
 {
@@ -44,6 +42,7 @@ namespace ProductService.Controllers
             var result = await _dbContext.Products.ToListAsync();
             return Ok(result);
         }
+
         /// <summary>
         /// Get the product with a certain id
         /// </summary>
@@ -102,6 +101,11 @@ namespace ProductService.Controllers
             return page;
         }
 
+        /// <summary>
+        /// Used to receive a very basic/stripped product class with minimal data based on productId
+        /// </summary>
+        /// <param name="productId">Id of the product to look for</param>
+        /// <returns>Found (and stripped) product</returns>
         [HttpGet("flat/{productId}")]
         public async Task<IActionResult> GetFlatProductById(int productId)
         {

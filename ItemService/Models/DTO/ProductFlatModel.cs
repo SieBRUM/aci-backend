@@ -2,6 +2,10 @@
 
 namespace ProductService.Models.DTO
 {
+    /// <summary>
+    /// Stripped and basic product model based on the product.cs database model
+    /// Used for calls that do not require all data and just one image
+    /// </summary>
     public class ProductFlatModel
     {
         public int Id { get; set; }
