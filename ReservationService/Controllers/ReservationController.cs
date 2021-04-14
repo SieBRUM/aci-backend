@@ -165,11 +165,5 @@ namespace ReservationService.Controllers
         {
             return await _dbContext.Reservations.Where(x => x.ProductId == productId).ToListAsync();
         }
-
-        [HttpGet("{productId}")]
-        public async Task<ActionResult<IEnumerable<Reservation>>> GetReservationsByProductId(int productId)
-        {
-            return await _dbContext.Reservations.Where(x => x.ProductId == productId).ToListAsync();
-        }
     }
 }

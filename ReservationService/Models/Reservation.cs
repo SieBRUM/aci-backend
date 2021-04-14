@@ -19,7 +19,6 @@ namespace ReservationService.Models
         [Key]
         [Required]
         public int Id { get; set; }
-
         /// <summary>
         /// [Required]: cannot be null
         /// Used to display the starting date when the reservation can be picked up
@@ -28,13 +27,8 @@ namespace ReservationService.Models
         public DateTime StartDate { get; set; }
 
         /// <summary>
-        /// Used to display the return date of the reservation
-        /// </summary>
-        public DateTime? ReturnDate { get; set; }
-
-        /// <summary>
         /// [Required]: cannot be null
-        /// Id of the person that mode the reservation
+        /// Used to display the end date when the reservation need to be brought back
         /// </summary>
         [Required]
         public DateTime EndDate { get; set; }
