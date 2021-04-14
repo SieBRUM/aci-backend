@@ -115,12 +115,8 @@ namespace ProductService.Controllers
             var cartProduct = new ProductFlatModel()
             {
                 Id = product.Id,
-                CatalogNumber = product.CatalogNumber,
                 Name = product.Name,
                 Description = product.Description,
-                IsAvailable = product.IsAvailable,
-                ArchivedSince = product.ArchivedSince,
-                Category = product.Category,
             };
 
             var image = await $"https://localhost:44372/api/image/{product.Id}".AllowAnyHttpStatus().GetJsonAsync<ImageBlobModel>();
