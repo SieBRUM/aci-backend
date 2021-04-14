@@ -69,7 +69,9 @@ namespace ProductService.Tests.UnitTests
             Assert.Equal(Models.DTO.ProductState.ARCHIVED, foundProduct.ProductState);
         }
 
-
+        /// <summary>
+        /// Sets the data in the database for every test
+        /// </summary>
         private void SeedProductsInMemoryDatabase()
         {
             var category = new Category() { Id = 1, Name = "Camera" };
