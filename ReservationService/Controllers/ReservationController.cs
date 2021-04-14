@@ -146,7 +146,7 @@ namespace ReservationService.Controllers
         /// </summary>
         /// <param name="startDate">The starting date</param>
         /// <param name="endDate">The end date</param>
-        /// <returns></returns>
+        /// <returns>The amount days that are weekend days found</returns>
         private int AmountOfWeekendDays(DateTime startDate, DateTime endDate)
         {
             int amountOfWeekendDays = 0;
