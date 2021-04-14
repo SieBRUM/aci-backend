@@ -121,6 +121,7 @@ namespace ProductService.Controllers
                 Id = product.Id,
                 Name = product.Name,
                 Description = product.Description,
+                ProductState = product.ProductState
             };
 
             var image = await $"https://localhost:44372/api/image/{product.Id}".AllowAnyHttpStatus().GetJsonAsync<ImageBlobModel>();
