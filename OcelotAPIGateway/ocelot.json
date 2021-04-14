@@ -45,7 +45,7 @@
       "UpstreamPathTemplate": "/api/product/lastcatalog"
     },
     {
-      "DownstreamPathTemplate": "/product/archiveproduct/{id}",
+      "DownstreamPathTemplate": "/product/{archiveProductId}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -53,7 +53,7 @@
           "Port": 64807
         }
       ],
-      "UpstreamPathTemplate": "/api/product/archive/{id}"
+      "UpstreamPathTemplate": "/api/product/{archiveProductId}"
     },
     {
       "DownstreamPathTemplate": "/reservation/{productId}",
