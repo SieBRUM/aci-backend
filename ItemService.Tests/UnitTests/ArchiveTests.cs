@@ -16,6 +16,7 @@ namespace ProductService.Tests.UnitTests
     {
         private readonly ProductController _controller;
         private readonly ProductServiceDatabaseContext _context;
+
         public ArchiveTests() 
         {
             var options = new DbContextOptionsBuilder<ProductServiceDatabaseContext>().UseInMemoryDatabase(databaseName: "InMemoryReservationDb").Options;
@@ -25,7 +26,6 @@ namespace ProductService.Tests.UnitTests
 
             SeedProductsInMemoryDatabase();
         }
-        
         
         [Fact]
         public async Task ArchiveProduct_ShouldReturnNoValidIdError()
@@ -46,6 +46,7 @@ namespace ProductService.Tests.UnitTests
             Assert.Equal(400, actionResult.StatusCode);
             Assert.Equal("PRODUCT.ARCHIVE.NO_PRODUCT_FOUND", actionResult.Value);
         }
+
         [Fact]
         public async Task ArchiveProduct_ShouldReturnAlreadyArchivedError()
         {
@@ -77,16 +78,17 @@ namespace ProductService.Tests.UnitTests
             var category = new Category() { Id = 1, Name = "Camera" };
             var data = new List<Product>
             {
-                new Product() {
-                Id = 1,
-                Name = "Video Camera 1",
-                CatalogNumber = 1,
-                Category = category,
-                InventoryLocation = "Shelf 4",
-                ProductState = Models.DTO.ProductState.AVAILABLE,
-                RequiresApproval = false,
-                Description = "New videocamera"
-            },
+                new Product() 
+                {
+                    Id = 1,
+                    Name = "Video Camera 1",
+                    CatalogNumber = 1,
+                    Category = category,
+                    InventoryLocation = "Shelf 4",
+                    ProductState = Models.DTO.ProductState.AVAILABLE,
+                    RequiresApproval = false,
+                    Description = "New videocamera"
+                },
                 new Product()
                 {
                     Id = 2,
@@ -107,9 +109,22 @@ namespace ProductService.Tests.UnitTests
         /// </summary>
         public void Dispose()
         {
-            _context.Products.RemoveRange(_context.Products.ToList());
-            _context.Categories.RemoveRange(_context.Categories.ToList());
-            _context.SaveChanges();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (_context != null)
+                {
+                    _context.Products.RemoveRange(_context.Products.ToList());
+                    _context.Categories.RemoveRange(_context.Categories.ToList());
+                    _context.SaveChanges();
+                    _context.Dispose();
+                }
+            }
         }
     }
 }
