@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Xunit;
-using ProductService;
 using ProductService.Controllers;
 using ProductService.Models;
 using ProductService.DBContexts;
