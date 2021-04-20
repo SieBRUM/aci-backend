@@ -100,10 +100,11 @@ namespace ProductService.Tests.UnitTests
                     RequiresApproval = false,
                     Description = "New videocamera"
                 }
-        };
+            };
             _context.Products.AddRange(data);
             _context.SaveChanges();
         }
+
         /// <summary>
         /// Disposes handles cleaning of the database entries after each test
         /// </summary>
@@ -115,15 +116,12 @@ namespace ProductService.Tests.UnitTests
 
         protected virtual void Dispose(bool disposing)
         {
-            if (disposing)
+            if (disposing && _context != null)
             {
-                if (_context != null)
-                {
-                    _context.Products.RemoveRange(_context.Products.ToList());
-                    _context.Categories.RemoveRange(_context.Categories.ToList());
-                    _context.SaveChanges();
-                    _context.Dispose();
-                }
+                _context.Products.RemoveRange(_context.Products.ToList());
+                _context.Categories.RemoveRange(_context.Categories.ToList());
+                _context.SaveChanges();
+                _context.Dispose();
             }
         }
     }
