@@ -23,6 +23,17 @@
       "UpstreamPathTemplate": "/api/product/page/{pageIndex}/{pageSize}"
     },
     {
+      "DownstreamPathTemplate": "/product/catalogEntries/{pageIndex}/{pageSize}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 64807
+        }
+      ],
+      "UpstreamPathTemplate": "/api/product/catalogEntries/{pageIndex}/{pageSize}"
+    },
+    {
       "DownstreamPathTemplate": "/product/{productId}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [

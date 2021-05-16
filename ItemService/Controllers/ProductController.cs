@@ -296,5 +296,100 @@ namespace ProductService.Controllers
             return Ok();
         }
 
+        [HttpGet("catalogEntries/{pageIndex}/{pageSize}")]
+        public async Task<CatalogPage> GetCatalogEntries(int pageIndex, int pageSize)
+        {
+            var catalogObjects = _dbContext.Products.OrderBy(x => x.CatalogNumber).Include(x => x.Category);
+            List<CatalogItemsWithCategory> allitems = new List<CatalogItemsWithCategory>();
+
+            foreach (var item in catalogObjects)
+            {
+                var images = await $"https://localhost:44372/api/image/images/{item.Id}".AllowAnyHttpStatus().GetJsonAsync<List<ImageBlobModel>>();
+                List<string> catalogImages = new List<string>();
+                foreach (var image in images)
+                {
+                    if (image != default && image.Blob != default)
+                    {
+                        catalogImages.Add(Convert.ToBase64String(image.Blob));
+                    }
+                }
+
+                if (!allitems.Any())
+                {
+                    allitems.Add(addNewEntryToCatalogList(item, catalogImages));
+                    continue;
+                }
+
+                //check of de category naam bij het item al voorkomt in een van de lijsten
+                var firstlist = allitems.FirstOrDefault(x => x.categoryName == item.Category.Name);
+                if (firstlist != default)
+                {
+                    // zoja * voeg toe aan de lijst die gevonden is
+                    firstlist.catalogItems.Add(convertProductToCatalogItemAsync(item, catalogImages));
+                }
+                else
+                {
+                    // zonee * maak nieuwe lijst aan en voeg die toe aan de grote lijst
+                    allitems.Add(addNewEntryToCatalogList(item, catalogImages));
+                }
+            }
+            var page = new CatalogPage();
+
+            page.TotalProductCount =  allitems.Count();
+
+            // Last page calculation goes wrong if the totalcount is 0
+            // also no point in trying to get 0 products from DB
+            if (page.TotalProductCount == 0)
+            {
+                page.CurrentPage = 0;
+                page.CatalogItems = new List<CatalogItemsWithCategory>();
+                return page;
+            }
+
+            // calculate how many pages there are given de current pageSize
+            int lastPage = (int)Math.Ceiling((double)page.TotalProductCount / pageSize) - 1;
+
+            // pageIndex below 0 is non-sensical, bringing the value to closest sane value
+            if (pageIndex < 0)
+                pageIndex = 0;
+
+            // use lastpage if requested page is higher
+            page.CurrentPage = Math.Min(pageIndex, lastPage);
+
+            page.CatalogItems = allitems.Skip((page.CurrentPage) * pageSize).Take(pageSize).ToList();
+            return page;
+        }
+
+        private CatalogItem convertProductToCatalogItemAsync(Product product, List<string> catalogImages)
+        {
+            CatalogItem item = new()
+            {
+                Id = product.Id,
+                Category = product.Category,
+                CatalogNumber = product.CatalogNumber,
+                Description = product.Description,
+                Name = product.Name,
+                RequiresApproval = product.RequiresApproval,
+                Status = product.ProductState,
+                Images = catalogImages,
+                ImageIndex = 0,
+            };
+            return item;
+        }
+
+        private CatalogItemsWithCategory addNewEntryToCatalogList(Product item, List<string> catalogItem)
+        {
+            List<CatalogItem> catalogItems = new List<CatalogItem>();
+            catalogItems.Add(convertProductToCatalogItemAsync(item, catalogItem));
+            CatalogItemsWithCategory catalogList = new()
+            {
+                catalogItems = catalogItems,
+                categoryName = item.Category.Name
+            };
+
+            return catalogList;
+        }
+
+
     }
 }

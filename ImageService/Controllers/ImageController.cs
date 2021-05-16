@@ -45,6 +45,19 @@ namespace ImageService.Controllers
             return Ok(new ImageBlobModel() { Blob = image?.Blob });
         }
 
+        [HttpGet("images/{productId}")]
+        public async Task<IActionResult> GetImagesByProductId(int productId)
+        {
+            var images = _dbContext.Images.Where(x => x.LinkedKey == productId && x.LinkedTableType == LinkedTableType.PRODUCT);
+            List<ImageBlobModel> imageBlobModels = new List<ImageBlobModel>();
+            foreach (var item in images)
+            {
+                imageBlobModels.Add(new ImageBlobModel() { Blob = item?.Blob });
+            }
+
+            return Ok(imageBlobModels);
+        }
+
         /// <summary>
         /// Adds image to the database
         /// </summary>
