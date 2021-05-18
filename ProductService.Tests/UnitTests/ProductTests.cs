@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using Xunit;
-using ProductService;
 using ProductService.Controllers;
 using ProductService.Models;
 using ProductService.DBContexts;
@@ -10,8 +8,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using ProductService.Models.DTO;
-
 
 namespace ProductService.Tests.UnitTests
 {
