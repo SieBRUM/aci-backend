@@ -296,6 +296,12 @@ namespace ProductService.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Gets all catalog entries based on pageindex and pagesize
+        /// </summary>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
         [HttpGet("catalogEntries/{pageIndex}/{pageSize}")]
         public async Task<CatalogPage> GetCatalogEntries(int pageIndex, int pageSize)
         {
@@ -320,16 +326,14 @@ namespace ProductService.Controllers
                     continue;
                 }
 
-                //check of de category naam bij het item al voorkomt in een van de lijsten
+                // Check if the category name already exists within an item list
                 var firstlist = allitems.FirstOrDefault(x => x.categoryName == item.Category.Name);
                 if (firstlist != default)
                 {
-                    // zoja * voeg toe aan de lijst die gevonden is
                     firstlist.catalogItems.Add(convertProductToCatalogItemAsync(item, catalogImages));
                 }
                 else
                 {
-                    // zonee * maak nieuwe lijst aan en voeg die toe aan de grote lijst
                     allitems.Add(addNewEntryToCatalogList(item, catalogImages));
                 }
             }
@@ -360,6 +364,12 @@ namespace ProductService.Controllers
             return page;
         }
 
+        /// <summary>
+        /// Converts a regular product class to a catalogitem
+        /// </summary>
+        /// <param name="product"></param>
+        /// <param name="catalogImages"></param>
+        /// <returns></returns>
         private CatalogItem convertProductToCatalogItemAsync(Product product, List<string> catalogImages)
         {
             CatalogItem item = new()
@@ -377,6 +387,12 @@ namespace ProductService.Controllers
             return item;
         }
 
+        /// <summary>
+        /// Adds new entry to a cataloglist
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="catalogItem"></param>
+        /// <returns></returns>
         private CatalogItemsWithCategory addNewEntryToCatalogList(Product item, List<string> catalogItem)
         {
             List<CatalogItem> catalogItems = new List<CatalogItem>();

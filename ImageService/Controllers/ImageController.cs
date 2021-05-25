@@ -45,6 +45,11 @@ namespace ImageService.Controllers
             return Ok(new ImageBlobModel() { Blob = image?.Blob });
         }
 
+        /// <summary>
+        /// Gets all images bound to the product id
+        /// </summary>
+        /// <param name="productId"></param>
+        /// <returns></returns>
         [HttpGet("images/{productId}")]
         public async Task<IActionResult> GetImagesByProductId(int productId)
         {
