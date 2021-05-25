@@ -9,25 +9,32 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using ProductService.Models.DTO;
 
 namespace ProductService.Tests.UnitTests
 {
-    public class ItemTests
+    public class ProductTests
     {
-        [Fact]
-        public async Task GetProducts_WhenCalled_ReturnListOfProducts()
+        private readonly ProductController _controller;
+        private readonly ProductServiceDatabaseContext _context;
+        public ProductTests()
         {
             var options = new DbContextOptionsBuilder<ProductServiceDatabaseContext>().UseInMemoryDatabase(databaseName: "InMemoryProductDb").Options;
 
-            var context = new ProductServiceDatabaseContext(options);
-            SeedProductInMemoryDatabaseWithData(context);
-            var controller = new ProductController(context);
-            var result = await controller.GetProducts();
+            _context = new ProductServiceDatabaseContext(options);
+            _controller = new ProductController(_context);
+            SeedProductInMemoryDatabaseWithData(_context);
+        }
+
+        [Fact]
+        public async Task GetProducts_WhenCalled_ReturnListOfProducts()
+        {
+            var result = await _controller.GetProducts();
 
             var objectresult = Assert.IsType<OkObjectResult>(result.Result);
             var products = Assert.IsAssignableFrom<IEnumerable<Product>>(objectresult.Value);
 
-            Assert.Equal(3, products.Count());
+            Assert.NotEmpty(products);
             Assert.Equal("BBB", products.ElementAt(0).Name);
             Assert.Equal("ZZZ", products.ElementAt(1).Name);
             Assert.Equal("AAA", products.ElementAt(2).Name);
@@ -39,11 +46,10 @@ namespace ProductService.Tests.UnitTests
                 {
                     new Product { Name = "BBB" },
                     new Product { Name = "ZZZ" },
-                    new Product { Name = "AAA" },
+                    new Product { Name = "AAA" }
                 };
             context.Products.AddRange(data);
             context.SaveChanges();
-
         }
     }
 }
