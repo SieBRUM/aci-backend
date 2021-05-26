@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Flurl.Http;
 using Microsoft.Extensions.Options;
+using ProductService.Converters;
 
 namespace ProductService.Controllers
 {
@@ -304,17 +305,18 @@ namespace ProductService.Controllers
         /// </summary>
         /// <param name="pageIndex"></param>
         /// <param name="pageSize"></param>
-        /// <returns></returns>
-        [HttpGet("catalogEntries/{pageIndex}/{pageSize}")]
+        /// <returns>Empty list if no entries are found, Succes a CatalogPage object</returns>
+        [HttpGet("catalogentries/{pageindex}/{pagesize}")]
         public async Task<CatalogPage> GetCatalogEntries(int pageIndex, int pageSize)
         {
-            var catalogObjects = _dbContext.Products.OrderBy(x => x.CatalogNumber).Include(x => x.Category);
-            List<CatalogItemsWithCategory> allitems = new List<CatalogItemsWithCategory>();
+            var converter = new CatalogItemConverter();
+            var catalogObjects = await _dbContext.Products.OrderBy(x => x.CatalogNumber).Include(x => x.Category).ToListAsync();
+            var allitems = new List<CatalogItemsWithCategory>();
 
             foreach (var item in catalogObjects)
             {
                 var images = await $"https://localhost:44372/api/image/images/{item.Id}".AllowAnyHttpStatus().GetJsonAsync<List<ImageBlobModel>>();
-                List<string> catalogImages = new List<string>();
+                var catalogImages = new List<string>();
                 foreach (var image in images)
                 {
                     if (image != default && image.Blob != default)
@@ -325,24 +327,25 @@ namespace ProductService.Controllers
 
                 if (!allitems.Any())
                 {
-                    allitems.Add(addNewEntryToCatalogList(item, catalogImages));
+                    allitems.Add(converter.AddNewEntryToCatalogList(item, catalogImages));
                     continue;
                 }
 
                 // Check if the category name already exists within an item list
-                var firstlist = allitems.FirstOrDefault(x => x.categoryName == item.Category.Name);
+                var firstlist = allitems.FirstOrDefault(x => x.CategoryName == item.Category.Name);
                 if (firstlist != default)
                 {
-                    firstlist.catalogItems.Add(convertProductToCatalogItemAsync(item, catalogImages));
+                    firstlist.CatalogItems.Add(converter.ConvertProductToCatalogItemAsync(item, catalogImages));
                 }
                 else
                 {
-                    allitems.Add(addNewEntryToCatalogList(item, catalogImages));
+                    allitems.Add(converter.AddNewEntryToCatalogList(item, catalogImages));
                 }
             }
-            var page = new CatalogPage();
-
-            page.TotalProductCount =  allitems.Count();
+            var page = new CatalogPage 
+            { 
+                TotalProductCount = allitems.Count() 
+            };
 
             // Last page calculation goes wrong if the totalcount is 0
             // also no point in trying to get 0 products from DB
@@ -358,57 +361,15 @@ namespace ProductService.Controllers
 
             // pageIndex below 0 is non-sensical, bringing the value to closest sane value
             if (pageIndex < 0)
+            {
                 pageIndex = 0;
-
+            }
+               
             // use lastpage if requested page is higher
             page.CurrentPage = Math.Min(pageIndex, lastPage);
 
             page.CatalogItems = allitems.Skip((page.CurrentPage) * pageSize).Take(pageSize).ToList();
             return page;
         }
-
-        /// <summary>
-        /// Converts a regular product class to a catalogitem
-        /// </summary>
-        /// <param name="product"></param>
-        /// <param name="catalogImages"></param>
-        /// <returns></returns>
-        private CatalogItem convertProductToCatalogItemAsync(Product product, List<string> catalogImages)
-        {
-            CatalogItem item = new()
-            {
-                Id = product.Id,
-                Category = product.Category,
-                CatalogNumber = product.CatalogNumber,
-                Description = product.Description,
-                Name = product.Name,
-                RequiresApproval = product.RequiresApproval,
-                Status = product.ProductState,
-                Images = catalogImages,
-                ImageIndex = 0,
-            };
-            return item;
-        }
-
-        /// <summary>
-        /// Adds new entry to a cataloglist
-        /// </summary>
-        /// <param name="item"></param>
-        /// <param name="catalogItem"></param>
-        /// <returns></returns>
-        private CatalogItemsWithCategory addNewEntryToCatalogList(Product item, List<string> catalogItem)
-        {
-            List<CatalogItem> catalogItems = new List<CatalogItem>();
-            catalogItems.Add(convertProductToCatalogItemAsync(item, catalogItem));
-            CatalogItemsWithCategory catalogList = new()
-            {
-                catalogItems = catalogItems,
-                categoryName = item.Category.Name
-            };
-
-            return catalogList;
-        }
-
-
     }
 }
