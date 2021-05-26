@@ -94,7 +94,7 @@ namespace ProductService.Controllers
             // calculate how many pages there are given de current pageSize
             int lastPage = (int)Math.Ceiling((double)page.TotalProductCount / pageSize) - 1;
 
-            // pageIndex below 0 is non-sensical, bringing the value to closest sane value
+            // pageIndex below 0 is nonsensical, bringing the value to closest sane value
             if (pageIndex < 0)
                 pageIndex = 0;
 
@@ -363,7 +363,7 @@ namespace ProductService.Controllers
             // calculate how many pages there are given de current pageSize
             int lastPage = (int)Math.Ceiling((double)page.TotalProductCount / pageSize) - 1;
 
-            // pageIndex below 0 is non-sensical, bringing the value to closest sane value
+            // pageIndex below 0 is nonsensical, bringing the value to closest sane value
             if (pageIndex < 0)
             {
                 pageIndex = 0;
@@ -373,6 +373,7 @@ namespace ProductService.Controllers
             page.CurrentPage = Math.Min(pageIndex, lastPage);
 
             page.CatalogItems = allitems.Skip((page.CurrentPage) * pageSize).Take(pageSize).ToList();
+
             return Ok(page);
         }
     }
