@@ -57,6 +57,7 @@ namespace ProductService.Tests.UnitTests
                 Assert.Equal(5, result.CatalogItems.Count);
             }
         }
+
         [Fact]
         private async Task GetCatalogEntries_ShouldReturnCatalogpageNumber3()
         {

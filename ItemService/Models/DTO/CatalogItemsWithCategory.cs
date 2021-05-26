@@ -5,9 +5,18 @@ using System.Threading.Tasks;
 
 namespace ProductService.Models.DTO
 {
+    /// <summary>
+    /// Class used to combine a list of catalogitems to a category
+    /// </summary>
     public class CatalogItemsWithCategory
     {
-        public List<CatalogItem> catalogItems { get; set; }
-        public string categoryName { get; set; }
+        /// <summary>
+        /// List of catalogitems attached to a category
+        /// </summary>
+        public List<CatalogItem> CatalogItems { get; set; }
+        /// <summary>
+        /// Name of the category
+        /// </summary>
+        public string CategoryName { get; set; }
     }
 }
