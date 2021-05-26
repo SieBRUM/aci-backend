@@ -49,11 +49,11 @@ namespace ImageService.Controllers
         /// Gets all images bound to the product id
         /// </summary>
         /// <param name="productId"></param>
-        /// <returns></returns>
+        /// <returns>Returns a list of images</returns>
         [HttpGet("images/{productId}")]
         public async Task<IActionResult> GetImagesByProductId(int productId)
         {
-            var images = _dbContext.Images.Where(x => x.LinkedKey == productId && x.LinkedTableType == LinkedTableType.PRODUCT);
+            var images = await _dbContext.Images.Where(x => x.LinkedKey == productId && x.LinkedTableType == LinkedTableType.PRODUCT).ToListAsync();
             List<ImageBlobModel> imageBlobModels = new List<ImageBlobModel>();
             foreach (var item in images)
             {

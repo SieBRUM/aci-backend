@@ -15,9 +15,13 @@ namespace ProductService.Models.DTO
         /// The name of the product
         /// </summary>
         public string Name { get; set; }
-
+        /// <summary>
+        /// The index entry for the catalog item
+        /// </summary>
         public int CatalogNumber { get; set; }
-
+        /// <summary>
+        /// Description of catalogitem
+        /// </summary>
         public string Description { get; set; }
         /// <summary>
         /// Whether the product has to be approved before it can be rented
@@ -27,14 +31,25 @@ namespace ProductService.Models.DTO
         /// The availability status of the product
         /// </summary>
         public ProductState Status { get; set; }
-
+        /// <summary>
+        /// list of images of the catalogitem
+        /// </summary>
         public List<string> Images { get; set; }
-
+        /// <summary>
+        /// Image index to indicate position
+        /// </summary>
         public int ImageIndex { get; set; }
-
-        public DateTime startDate { get; set; }
-        public DateTime endDate { get; set; }
-
+        /// <summary>
+        /// Start date renting the catalogitem
+        /// </summary>
+        public DateTime StartDate { get; set; }
+        /// <summary>
+        /// End date renting the catalogitem
+        /// </summary>
+        public DateTime EndDate { get; set; }
+        /// <summary>
+        /// Category attached to the catalogitem
+        /// </summary>
         public Category Category { get; set; }
     }
 }
