@@ -345,7 +345,7 @@ namespace ProductService.Controllers
             }
             var page = new CatalogPage 
             { 
-                TotalProductCount = allitems.Count() 
+                TotalProductCount = allitems.Count
             };
 
             // Last page calculation goes wrong if the totalcount is 0
