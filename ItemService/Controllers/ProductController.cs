@@ -304,8 +304,12 @@ namespace ProductService.Controllers
         /// <param name="pageSize"></param>
         /// <returns>Empty list if no entries are found, Succes a CatalogPage object</returns>
         [HttpGet("catalogentries/{pageindex}/{pagesize}")]
-        public async Task<CatalogPage> GetCatalogEntries(int pageIndex, int pageSize)
+        public async Task<IActionResult> GetCatalogEntries(int pageIndex, int pageSize)
         {
+            if (pageIndex < 0 || pageSize < 0)
+            {
+                return BadRequest("CATALOG.INCORRECT_PAGESIZE_OR_INDEX");
+            }
             var converter = new CatalogItemConverter();
             var catalogObjects = await _dbContext.Products.OrderBy(x => x.CatalogNumber).Include(x => x.Category).ToListAsync();
             var allitems = new List<CatalogItemsWithCategory>();
@@ -350,7 +354,7 @@ namespace ProductService.Controllers
             {
                 page.CurrentPage = 0;
                 page.CatalogItems = new List<CatalogItemsWithCategory>();
-                return page;
+                return Ok(page);
             }
 
             // calculate how many pages there are given de current pageSize
@@ -366,7 +370,7 @@ namespace ProductService.Controllers
             page.CurrentPage = Math.Min(pageIndex, lastPage);
 
             page.CatalogItems = allitems.Skip((page.CurrentPage) * pageSize).Take(pageSize).ToList();
-            return page;
+            return Ok(page);
         }
     }
 }
