@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace ProductService.Converters
 {
+    /// <summary>
+    /// Converter used for the product controller to convert to catalog items
+    /// </summary>
     public class CatalogItemConverter
     {
         /// <summary>
