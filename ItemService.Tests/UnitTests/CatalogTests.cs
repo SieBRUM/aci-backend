@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Xunit;
 using Newtonsoft.Json;
 using Flurl.Http.Testing;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ProductService.Tests.UnitTests
 {
@@ -38,8 +39,9 @@ namespace ProductService.Tests.UnitTests
                 httpTest.RespondWith(serializedObject);
                 var result = await _controller.GetCatalogEntries(0, 0);
 
-                Assert.IsType<CatalogPage>(result);
-                Assert.Empty(result.CatalogItems);
+                var okObj = Assert.IsType<OkObjectResult>(result);
+                var model = Assert.IsAssignableFrom<CatalogPage>(okObj.Value);
+                Assert.Empty(model.CatalogItems);
             }
         }
 
@@ -53,8 +55,11 @@ namespace ProductService.Tests.UnitTests
             {
                 httpTest.RespondWith(serializedObject);
                 var result = await _controller.GetCatalogEntries(0, 5);
-                Assert.IsType<CatalogPage>(result);
-                Assert.Equal(5, result.CatalogItems.Count);
+
+                var okObj = Assert.IsType<OkObjectResult>(result);
+                var model = Assert.IsAssignableFrom<CatalogPage>(okObj.Value);
+
+                Assert.Equal(5, model.CatalogItems.Count);
             }
         }
 
@@ -68,8 +73,11 @@ namespace ProductService.Tests.UnitTests
             {
                 httpTest.RespondWith(serializedObject);
                 var result = await _controller.GetCatalogEntries(3, 2);
-                Assert.IsType<CatalogPage>(result);
-                Assert.Single(result.CatalogItems);
+
+                var okObj = Assert.IsType<OkObjectResult>(result);
+                var model = Assert.IsAssignableFrom<CatalogPage>(okObj.Value);
+
+                Assert.Single(model.CatalogItems);
             }
         }
 

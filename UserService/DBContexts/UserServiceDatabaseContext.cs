@@ -53,7 +53,16 @@ namespace UserService.DBContexts
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
-                optionsBuilder.UseSqlServer("Server=localhost\\SQLEXPRESS;Database=UserService;Trusted_Connection=True;");
+            {
+                var dbString = Environment.GetEnvironmentVariable("aci_db_string");
+                if (string.IsNullOrWhiteSpace(dbString))
+                {
+                    throw new MissingFieldException("Database environment variable not found.");
+                }
+
+                optionsBuilder.UseSqlServer(Environment.GetEnvironmentVariable("aci_db_string").Replace("DATABASE_NAME", "UserService"));
+            }
+
             base.OnConfiguring(optionsBuilder);
         }
 
