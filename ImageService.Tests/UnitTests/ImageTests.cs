@@ -13,7 +13,7 @@ using Xunit;
 
 namespace ImageService.Tests.UnitTests
 {
-    public class ImageTests
+    public class ImageTests: IDisposable
     {
         private readonly ImageController _controller;
         private readonly ImageServiceDatabaseContext _context;
@@ -25,20 +25,6 @@ namespace ImageService.Tests.UnitTests
             _context = new ImageServiceDatabaseContext(options);
             _controller = new ImageController(_context);
             SeedImageInMemoryDatabaseWithData(_context);
-        }
-
-        [Fact]
-        public async Task GetImages_WhenCalled_ReturnListOfImages()
-        {
-            var result = await _controller.GetImages();
-
-            var objectresult = Assert.IsType<OkObjectResult>(result.Result);
-            var images = Assert.IsAssignableFrom<IEnumerable<Image>>(objectresult.Value);
-
-            Assert.Equal(3, images.Count());
-            Assert.Equal("BBB", Encoding.ASCII.GetString(images.ElementAt(0).Blob));
-            Assert.Equal("ZZZ", Encoding.ASCII.GetString(images.ElementAt(1).Blob));
-            Assert.Equal("AAA", Encoding.ASCII.GetString(images.ElementAt(2).Blob));
         }
 
         [Fact]
@@ -72,6 +58,15 @@ namespace ImageService.Tests.UnitTests
             context.Images.AddRange(data);
             context.SaveChanges();
 
+        }
+
+        /// <summary>
+        /// Disposes handles cleaning of the database entries after each test
+        /// </summary>
+        public void Dispose()
+        {
+            _context.Images.RemoveRange(_context.Images.ToList());
+            _context.SaveChanges();
         }
     }
 }
