@@ -156,7 +156,7 @@ namespace ReservationService.Controllers
         }
 
         /// <summary>
-        /// Get all reservations with similar start or enddate
+        /// Get all reservations with similar startdate
         /// </summary>
         /// <returns>List of all similar reservations</returns>
         [HttpGet("similar")]
@@ -167,13 +167,13 @@ namespace ReservationService.Controllers
 
             for (int i = 0; i < reservations.Count; i++)
             {
-                var list = new List<Reservation>();
+                var mergedReservations = new List<Reservation>();
 
-                list.AddRange(reservations.Where(x => x.StartDate.Date == reservations[i].StartDate.Date && x.RenterId == reservations[i].RenterId).ToList());
+                mergedReservations.AddRange(reservations.Where(x => x.StartDate.Date == reservations[i].StartDate.Date && x.RenterId == reservations[i].RenterId).ToList());
 
                 reservations.RemoveAll(x => x.StartDate.Date == reservations[i].StartDate.Date && x.RenterId == reservations[i].RenterId && reservations[i].Id != x.Id);
 
-                similarReservations.Add(list);
+                similarReservations.Add(mergedReservations);
             }
 
             return Ok(similarReservations);
